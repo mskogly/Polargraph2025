@@ -1,4 +1,5 @@
 ControlFrameSimple addMachineExecControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
+  /*
   final Frame f = new Frame( theName );
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
 
@@ -17,6 +18,11 @@ ControlFrameSimple addMachineExecControlFrame(String theName, int theWidth, int 
   );
   f.setResizable( true );
   f.setVisible( true );
+  */
+  
+  final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {

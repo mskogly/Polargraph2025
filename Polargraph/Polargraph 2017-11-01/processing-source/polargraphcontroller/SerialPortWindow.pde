@@ -1,10 +1,14 @@
 /*------------------------------------------------------------------------
  Class and controllers on the "serial port" subwindow
  ------------------------------------------------------------------------*/
+
+ControlFrameSimple serialPortControlFrame = null;
   
 ControlFrameSimple addSerialPortControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
+  /*
   final Frame f = new Frame( theName );
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  serialPortControlFrame = p;
 
   f.add( p );
   p.init();
@@ -21,6 +25,14 @@ ControlFrameSimple addSerialPortControlFrame(String theName, int theWidth, int t
   );
   f.setResizable( true );
   f.setVisible( true );
+  */
+  
+  final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  serialPortControlFrame = p;
+  
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
+  
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {
@@ -36,9 +48,10 @@ ControlFrameSimple addSerialPortControlFrame(String theName, int theWidth, int t
     .setItemHeight(16)
     .plugTo(this, "dropdown_serialPort");  
 
+  sl.addItem("Refresh Serial Ports", -2);
   sl.addItem("No serial connection", -1);
 
-  String[] ports = Serial.list();
+  String[] ports = processing.serial.Serial.list();
   
   for (int i = 0; i < ports.length; i++) {
     println("Adding " + ports[i]);
@@ -58,18 +71,33 @@ ControlFrameSimple addSerialPortControlFrame(String theName, int theWidth, int t
 }
 
 
-void dropdown_serialPort(int newSerialPort) 
+void dropdown_serialPort(int selectionIndex) 
 {
-  println("In dropdown_serialPort, newSerialPort: " + newSerialPort);
-
-  // No serial in list is slot 0 in code because of list index
-  // So shift port index by one 
-  newSerialPort -= 1;
+  println("In dropdown_serialPort, selectionIndex: " + selectionIndex);
   
-  if (newSerialPort == -2)
-  {
-  } 
-  else if (newSerialPort == -1) {
+  if (selectionIndex == 0) {
+    println("Refreshing serial ports...");
+    ScrollableList sl = serialPortControlFrame.cp5().get(ScrollableList.class, "dropdown_serialPort");
+    sl.clear();
+    sl.addItem("Refresh Serial Ports", -2);
+    sl.addItem("No serial connection", -1);
+    
+    String[] ports = processing.serial.Serial.list();
+    for (int i = 0; i < ports.length; i++) {
+      println("Adding " + ports[i]);
+      sl.addItem(ports[i], i);
+    }
+    sl.setOpen(true);
+    return;
+  }
+
+  // Map selection index to port index
+  // 0: Refresh
+  // 1: No connection (-1)
+  // 2: Port 0 (0)
+  int newSerialPort = selectionIndex - 2;
+  
+  if (newSerialPort == -1) {
     println("Disconnecting serial port.");
     useSerialPortConnection = false;
     if (myPort != null)
@@ -84,7 +112,7 @@ void dropdown_serialPort(int newSerialPort)
   else if (newSerialPort != getSerialPortNumber()) {
     println("About to connect to serial port in slot " + newSerialPort);
     // Print a list of the serial ports, for debugging purposes:
-    if (newSerialPort < Serial.list().length) {
+    if (newSerialPort < processing.serial.Serial.list().length) {
       try {
         drawbotReady = false;
         drawbotConnected = false;
@@ -93,13 +121,17 @@ void dropdown_serialPort(int newSerialPort)
           myPort = null;
         }
         
-        if (getSerialPortNumber() >= 0) 
-          println("closing " + Serial.list()[getSerialPortNumber()]);
+        if (getSerialPortNumber() >= 0) {
+           String[] currentPorts = processing.serial.Serial.list();
+           if (getSerialPortNumber() < currentPorts.length) {
+             println("closing " + currentPorts[getSerialPortNumber()]);
+           }
+        }
 
         serialPortNumber = newSerialPort;
-        String portName = Serial.list()[serialPortNumber];
+        String portName = processing.serial.Serial.list()[serialPortNumber];
 
-        myPort = new Serial(this, portName, getBaudRate());
+        myPort = new processing.serial.Serial(this, portName, getBaudRate());
         //read bytes into a buffer until you get a linefeed (ASCII 10):
         myPort.bufferUntil('\n');
         useSerialPortConnection = true;
@@ -110,7 +142,7 @@ void dropdown_serialPort(int newSerialPort)
           + " caused an exception: " + e.getMessage());
       }
     } else {
-      println("No serial ports found.");
+      println("No serial ports found or invalid index.");
       useSerialPortConnection = false;
     }
   } else {

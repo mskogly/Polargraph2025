@@ -74,6 +74,7 @@ String spriteWriting_spriteFilePrefix = "sprite/let";
 String spriteWriting_spriteFileSuffix = ".txt";
 
 ControlFrameSimple addSpriteWritingControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
+  /*
   final Frame f = new Frame( theName );
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
 
@@ -93,6 +94,11 @@ ControlFrameSimple addSpriteWritingControlFrame(String theName, int theWidth, in
   );
   f.setResizable( true );
   f.setVisible( true );
+  */
+  
+  final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {
@@ -222,6 +228,7 @@ int sprite_minSpriteSize = 100;
 int sprite_maxSpriteSize = 500;
 
 ControlFrameSimple addRandomSpriteControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
+  /*
   final Frame f = new Frame( theName );
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
 
@@ -240,6 +247,11 @@ ControlFrameSimple addRandomSpriteControlFrame(String theName, int theWidth, int
   );
   f.setResizable( true );
   f.setVisible( true );
+  */
+  
+  final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {
@@ -319,6 +331,7 @@ int norwegian_amplitude = 20;
 int norwegian_wavelength = 2;
 
 ControlFrameSimple addNorwegianPixelControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
+  /*
   final Frame f = new Frame( theName );
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
 
@@ -337,6 +350,11 @@ ControlFrameSimple addNorwegianPixelControlFrame(String theName, int theWidth, i
   );
   f.setResizable( true );
   f.setVisible( true );
+  */
+  
+  final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {

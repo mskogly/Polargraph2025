@@ -3,24 +3,10 @@
 ------------------------------------------------------------------------*/
 
 ControlFrameSimple addMachineStoreControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
-  final Frame f = new Frame( theName );
+  
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
-
-  f.add( p );
-  p.init();
-  f.setTitle(theName);
-  f.setSize( p.w, p.h );
-  f.setLocation( theX, theY );
-  f.addWindowListener( new WindowAdapter() {
-    @Override
-      public void windowClosing(WindowEvent we) {
-      p.dispose();
-      f.dispose();
-    }
-  } 
-  );
-  f.setResizable( true );
-  f.setVisible( true );
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {

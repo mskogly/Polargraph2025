@@ -8,8 +8,11 @@ public class ControlFrameSimple extends PApplet {
 
   int bg;
 
-  public void setup() {
+  public void settings() {
     size(w, h);
+  }
+
+  public void setup() {
     frameRate(5);
     cp5 = new ControlP5( this );
   }

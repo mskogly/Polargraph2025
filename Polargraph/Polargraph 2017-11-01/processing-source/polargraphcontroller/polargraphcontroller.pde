@@ -112,7 +112,7 @@ int bottomEdgeOfQueue = 0;
 int queueRowHeight = 15;
 
 int baudRate = 57600;
-Serial myPort;                       // The serial port
+processing.serial.Serial myPort;                       // The serial port
 int[] serialInArray = new int[1];    // Where we'll put what we receive
 int serialCount = 0;                 // A count of how many bytes we receive
 
@@ -545,10 +545,17 @@ boolean rescaleDisplayMachine = true;
 int polygonizer = 0;
 float polygonizerLength = 0.0;
 
+void settings()
+{
+  size(windowWidth, windowHeight);
+}
+
 void setup()
 {
   println("Running polargraph controller");
-  frame.setResizable(true);
+  println("Running polargraph controller");
+  surface.setResizable(true);
+  initLogging();
   initLogging();
   parentPapplet = this;
   
@@ -565,11 +572,10 @@ void setup()
   RG.init(this);
   loadFromPropertiesFile();
 
-  size(windowWidth, windowHeight);
   this.cp5 = new ControlP5(this);
   initTabs();
   
-  String[] serialPorts = Serial.list();
+  String[] serialPorts = processing.serial.Serial.list();
   println("Serial ports available on your machine:");
   println(serialPorts);
 
@@ -584,7 +590,7 @@ void setup()
       {
         println("Get serial port no: "+getSerialPortNumber());
         portName = serialPorts[getSerialPortNumber()];
-        myPort = new Serial(this, portName, getBaudRate());
+        myPort = new processing.serial.Serial(this, portName, getBaudRate());
         //read bytes into a buffer until you get a linefeed (ASCII 10):
         myPort.bufferUntil('\n');
         useSerialPortConnection = true;
@@ -610,7 +616,7 @@ void setup()
 
   currentMode = MODE_BEGIN;
   preLoadCommandQueue();
-  changeTab(TAB_NAME_INPUT, TAB_NAME_INPUT);
+  switchPolargraphTab(TAB_NAME_INPUT, TAB_NAME_INPUT);
 
   addEventListeners();
 
@@ -646,6 +652,7 @@ void fitDisplayMachineToWindow() {
 
 void addEventListeners()
 {
+  /*
   frame.addComponentListener(new ComponentAdapter() 
     {
       public void componentResized(ComponentEvent event) 
@@ -658,7 +665,9 @@ void addEventListeners()
       }
     }
   );
+  */
   
+  /*
   addMouseWheelListener(new java.awt.event.MouseWheelListener() 
     { 
       public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) 
@@ -667,6 +676,7 @@ void addEventListeners()
       }
     }
   ); 
+  */ 
 }  
 
 
@@ -680,14 +690,17 @@ void preLoadCommandQueue()
 void windowResized()
 {
   noLoop();
-  windowWidth = frame.getWidth();
-  windowHeight = frame.getHeight();
+  noLoop();
+  windowWidth = width;
+  windowHeight = height;
   println("New window size: " + windowWidth + " x " + windowHeight);
+  /*
   if (frame.getExtendedState() == Frame.MAXIMIZED_BOTH) {
     println("Max");
     frame.setExtendedState(0);
     frame.setSize(windowWidth, windowHeight);
   }
+  */
   
   for (String key : getPanels().keySet())
   {
@@ -1090,7 +1103,7 @@ void loadImageWithFileChooser()
       fc.setFileFilter(new ImageFileFilter());
       fc.setDialogTitle("Choose an image file...");
 
-      int returned = fc.showOpenDialog(frame);
+      int returned = fc.showOpenDialog(null);
       
       lastImageDirectory = fc.getCurrentDirectory();
       
@@ -1141,7 +1154,7 @@ void loadVectorWithFileChooser()
       
       fc.setFileFilter(new VectorFileFilter());
       fc.setDialogTitle("Choose a vector file...");
-      int returned = fc.showOpenDialog(frame);
+      int returned = fc.showOpenDialog(null);
       lastImageDirectory = fc.getCurrentDirectory();
       
       if (returned == JFileChooser.APPROVE_OPTION) 
@@ -1193,7 +1206,7 @@ void loadNewPropertiesFilenameWithFileChooser()
       
       fc.setDialogTitle("Choose a config file...");
 
-      int returned = fc.showOpenDialog(frame);
+      int returned = fc.showOpenDialog(null);
       
       lastPropertiesDirectory = fc.getCurrentDirectory();
       
@@ -1245,7 +1258,7 @@ void saveNewPropertiesFileWithFileChooser()
       
       fc.setDialogTitle("Enter a config file name...");
 
-      int returned = fc.showSaveDialog(frame);
+      int returned = fc.showSaveDialog(null);
       if (returned == JFileChooser.APPROVE_OPTION) 
       {
         File file = fc.getSelectedFile();
@@ -1548,7 +1561,7 @@ void controlEvent(ControlEvent controlEvent)
     }
     else
     {
-      changeTab(currentTab, controlEvent.tab().getName());
+      switchPolargraphTab(currentTab, controlEvent.tab().getName());
     }
   }
   else if(controlEvent.isGroup()) 
@@ -1565,10 +1578,10 @@ void controlEvent(ControlEvent controlEvent)
   } 
 }
 
-void changeTab(String from, String to)
+void switchPolargraphTab(String sourceTab, String destTab)
 {
   // hide old panels
-  currentTab = to;
+  currentTab = destTab;
   for (Panel panel : getPanelsForTab(currentTab))
   {
     for (Controller c : panel.getControls())
@@ -1939,8 +1952,9 @@ void leftButtonMachineClick()
   
 }
 
-void mouseWheel(int delta) 
+void mouseWheel(processing.event.MouseEvent event) 
 {
+  int delta = event.getCount();
   noLoop();
   // get the mouse position on the machine, before changing the machine scaling
   PVector pos = getDisplayMachine().scaleToDisplayMachine(getMouseVector());
@@ -2701,7 +2715,7 @@ void setHardwareVersionFromIncoming(String readyString)
   }
 }
 
-void serialEvent(Serial myPort) 
+void serialEvent(processing.serial.Serial myPort) 
 { 
   // read the serial buffer:
   String incoming = myPort.readStringUntil('\n');

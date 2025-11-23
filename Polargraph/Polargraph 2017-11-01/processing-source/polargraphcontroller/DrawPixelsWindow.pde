@@ -7,6 +7,7 @@ public Integer renderStartPosition = DRAW_DIR_NE; // default top right hand corn
 public Integer renderStyle = PIXEL_STYLE_SQ_FREQ; // default pixel style square wave
 
 ControlFrameSimple addDrawPixelsControlFrame(String theName, int theWidth, int theHeight, int theX, int theY, int theColor ) {
+  /*
   final Frame f = new Frame( theName );
   final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
 
@@ -25,6 +26,11 @@ ControlFrameSimple addDrawPixelsControlFrame(String theName, int theWidth, int t
   );
   f.setResizable( true );
   f.setVisible( true );
+  */
+  
+  final ControlFrameSimple p = new ControlFrameSimple( this, theWidth, theHeight, theColor );
+  String[] args = {"--location=" + theX + "," + theY, theName};
+  PApplet.runSketch(args, p);
   // sleep a little bit to allow p to call setup.
   // otherwise a nullpointerexception might be caused.
   try {
@@ -115,6 +121,7 @@ class DrawPixelsWindow extends ControlFrame {
 		int yPos = 100;
 		String name = DRAW_PIXELS_WINDOW_NAME;
 
+		/*
 		final Frame f = new Frame(DRAW_PIXELS_WINDOW_NAME);
 		f.add(this);
 		this.init();
@@ -130,7 +137,7 @@ class DrawPixelsWindow extends ControlFrame {
 				f.dispose();
 			}
 		});
-		
+		*/
 
 	}
 
